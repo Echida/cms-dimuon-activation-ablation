@@ -67,7 +67,7 @@ Prediction (fixed before running): ReLU reaches R² ≥ 0.99 and both RMSEs belo
 | ReLU | 0.935 ± 0.053 | 2.55 ± 1.54 | 2.13 ± 1.32 |
 | No activation | 0.011 ± 0.039 | 7.79 ± 1.29 | 2.69 ± 1.06 |
 
-**Result:** the prediction for the ReLU network was **refuted** (all three conditions failed). The prediction for the network without activation **held**: its R² ≈ 0 means it is no better than always guessing the average mass. The activation makes a huge difference (R² 0.01 → 0.94), but not enough to separate neighbouring peaks.  
+**Result:** the prediction for the ReLU network was **refuted** (all three conditions failed). The prediction for the network without activation **held**: its R² ≈ 0 means it is no better than always guessing the average mass. The activation makes a huge difference (R² 0.01 → 0.94), but not enough to separate neighbouring peaks.
 
 ## Experiment 2 – growing the network (100 / 200 / 400 neurons, 3 seeds)
 
@@ -103,7 +103,7 @@ Added after Experiment 2, written down before running. Only the training changes
 
 ### Why did seed 2 fail in the Υ region? (diagnosis, added after the results)
 
-I retrained the worst case (400 neurons, seed 2, Experiment 2 settings, RMSE 5.17 GeV in 8–12 GeV) and listed the test events with the largest errors. Almost the whole error comes from **one event**: true M = 11.3 GeV, predicted M = 331 GeV. Its first muon has E1 ≈ 3384 GeV, while the largest E1 in the training set is about 1526 GeV. The network never saw such an input, so it had to extrapolate, and it did so badly. Without the five worst events, the RMSE in this region drops from 5.17 to 0.61 GeV. A muon with transverse momentum of about 700 GeV in a pair with mass 11 GeV is most likely a mismeasured track.
+I retrained the worst case (400 neurons, seed 2, Experiment 2 settings, RMSE 5.17 GeV in 8–12 GeV) and listed the test events with the largest errors. Almost the whole error comes from **one event**: true M = 11.3 GeV, predicted M = 331 GeV. Its first muon has E1 ≈ 3384 GeV, while the largest E1 in the training set is about 1526 GeV. The network never saw such an input, so it had to extrapolate, and it did so badly. Without the five worst events, the RMSE in this region drops from 5.17 to 0.61 GeV. The event is Run 146514, Event 147609488. Its first muon is a *global* muon (Type G, seen in both the inner tracker and the outer muon system), with transverse momentum of about 708 GeV; the second is a *tracker* muon (Type T) with about 1 GeV. A muon this energetic is very rare in this dataset, and at such high momentum the track is almost straight, so its momentum is measured much less precisely. The event may therefore be mismeasured, but this cannot be confirmed with the information in the file. Either way, the network's failure comes from an input far outside the training range.
 
 Conclusion: the failure in the Υ region is caused by a rare extreme input, not by the network size. RMSE is very sensitive to such single events. Planned fix (stratified split) was dropped, because the problem is not how the events are divided between training and test.
 
@@ -117,11 +117,11 @@ For a low-mass pair, M comes from a tiny difference between two large numbers. E
 - **Z region (80–100 GeV), seed 0, 100 neurons:** 89 test events. ReLU (Experiment 3 training) RMSE 7.34 GeV (8.0% of 91.19 GeV); no activation 75.35 GeV (82.6%). There is no neighbouring peak, so no threshold. For reference, the natural width of the Z is about 2.5 GeV, so even the ReLU error is about three times larger. Very few training events lie in this region (about 360 of 80,000).
 - **Predicted-mass histogram (2–5 GeV), same runs:** the sharp J/ψ peak at 3.1 GeV is not visible in the ReLU predictions; with an error of about 1 GeV it is smeared into a broad bump. Most predictions of the network without activation fall outside 2–5 GeV. This is the threshold argument seen directly: with an error well above 0.29 GeV, peaks disappear.
 
-  ![Predicted vs. true mass, 2–5 GeV](tahmin_histogram.png)
+  ![Predicted vs. true mass, 2–5 GeV](prediction_histogram.png)
 
 - **100 vs. 400 neurons, same seed (seed 0, Experiment 3 training):** the predicted bump around 3 GeV is higher with 400 neurons, but the error is not smaller (1.10 vs. 1.14 GeV). The 400-neuron network also pushes events from around 2 GeV up towards 3 GeV. A higher bump is not the same as a more accurate prediction; only the mean over seeds (Experiment 3) shows the improvement with size. Two separate peaks are not visible in either case.
 
-  ![ReLU predictions with 100 and 400 neurons, 2–5 GeV](kambur_100_400.png)
+  ![ReLU predictions with 100 and 400 neurons, 2–5 GeV](bump_100_vs_400_neurons.png)
 
 ## Future work
 
